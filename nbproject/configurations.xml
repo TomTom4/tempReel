@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="89">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="." name="projet_initial">
+      <in>fonctions.c</in>
+      <in>fonctions.h</in>
+      <in>global.c</in>
+      <in>global.h</in>
+      <in>includes.h</in>
+      <in>main.c</in>
+    </df>
+    <logicalFolder name="source"
+                   displayName="source"
+                   projectFiles="true"
+                   root="../lib_destijl/source">
+      <itemPath>../lib_destijl/source/daction.c</itemPath>
+      <itemPath>../lib_destijl/source/darena.c</itemPath>
+      <itemPath>../lib_destijl/source/dbattery.c</itemPath>
+      <itemPath>../lib_destijl/source/dcamera.c</itemPath>
+      <itemPath>../lib_destijl/source/dimage.c</itemPath>
+      <itemPath>../lib_destijl/source/dimageshop.c</itemPath>
+      <itemPath>../lib_destijl/source/djpegimage.c</itemPath>
+      <itemPath>../lib_destijl/source/dmessage.c</itemPath>
+      <itemPath>../lib_destijl/source/dmission.c</itemPath>
+      <itemPath>../lib_destijl/source/dmouvement.c</itemPath>
+      <itemPath>../lib_destijl/source/dposition.c</itemPath>
+      <itemPath>../lib_destijl/source/drobot.c</itemPath>
+      <itemPath>../lib_destijl/source/dserver.c</itemPath>
+      <itemPath>../lib_destijl/source/dtools.c</itemPath>
+    </logicalFolder>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>.</Elem>
+  </sourceRootList>
+  <projectmakefile>Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
+        <compilerSet>default</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>.</buildCommandWorkingDir>
+          <buildCommand>${MAKE} -f Makefile</buildCommand>
+          <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
+          <executablePath>robot</executablePath>
+        </makeTool>
+      </makefileType>
+      <item path="../lib_destijl/source/daction.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="../lib_destijl/source/darena.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="../lib_destijl/source/dbattery.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="../lib_destijl/source/dcamera.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="../lib_destijl/source/dimage.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="../lib_destijl/source/dimageshop.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="../lib_destijl/source/djpegimage.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="../lib_destijl/source/dmessage.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="../lib_destijl/source/dmission.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="../lib_destijl/source/dmouvement.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="../lib_destijl/source/dposition.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="../lib_destijl/source/drobot.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="../lib_destijl/source/dserver.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="../lib_destijl/source/dtools.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <folder path="projet_initial">
+        <cTool>
+          <incDir>
+            <pElem>../include</pElem>
+            <pElem>../include/x86_64-linux-gnu</pElem>
+            <pElem>../xenomai/include</pElem>
+            <pElem>../lib_destijl/headers</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <folder path="source">
+        <cTool>
+          <incDir>
+            <pElem>../lib_destijl/include</pElem>
+            <pElem>../lib_destijl/include/x86_64-linux-gnu</pElem>
+            <pElem>../lib_destijl/xenomai/include</pElem>
+            <pElem>../lib_destijl/lib_destijl/headers</pElem>
+          </incDir>
+        </cTool>
+      </folder>
+      <item path="fonctions.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="fonctions.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="global.c" ex="false" tool="0" flavor2="0">
+      </item>
+      <item path="global.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="includes.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="main.c" ex="false" tool="0" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>

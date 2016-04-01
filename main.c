@@ -70,12 +70,25 @@ void initStruct(void) {
         exit(EXIT_FAILURE);
     }
 
+	 if (err = rt_mutex_create(&mutexRobot, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+     }
+      if (err = rt_mutex_create(&mutexServeur, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+      }
+	
     /* Creation du semaphore */
     if (err = rt_sem_create(&semConnecterRobot, NULL, 0, S_FIFO)) {
         rt_printf("Error semaphore create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
-
+    if (err = rt_sem_create(&semRechargeWat, NULL, 0, S_FIFO)) {
+        rt_printf("Error semaphore create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    
     /* Creation des taches */
     if (err = rt_task_create(&tServeur, NULL, 0, PRIORITY_TSERVEUR, 0)) {
         rt_printf("Error task create: %s\n", strerror(-err));
@@ -93,7 +106,13 @@ void initStruct(void) {
         rt_printf("Error task create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
+
     if (err = rt_task_create(&tImage, NULL, 0, PRIORITY_TENVOYER, 0)) {
+        rt_printf("Error task create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    
+   if (err = rt_task_create(&trechargewat, NULL, 0, PRIORITY_TRECHARGEWAT, 0)) {
         rt_printf("Error task create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
@@ -133,6 +152,10 @@ void startTasks() {
         exit(EXIT_FAILURE);
     }
 
+    if (err = rt_task_start(&trechargewat, &recharge, NULL)) {
+        rt_printf("Error task start: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
 }
 
 void deleteTasks() {
@@ -140,4 +163,5 @@ void deleteTasks() {
     rt_task_delete(&tconnect);
     rt_task_delete(&tmove);
     rt_task_delete(&tImage);
+    rt_task_delete(&trechargewat);
 }
