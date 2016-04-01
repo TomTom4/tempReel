@@ -15,23 +15,27 @@ extern RT_TASK tServeur;
 extern RT_TASK tconnect;
 extern RT_TASK tmove;
 extern RT_TASK tenvoyer;
+extern RT_TASK trechargewat;
 
 /* @descripteurs des mutex */
 extern RT_MUTEX mutexEtat;
 extern RT_MUTEX mutexMove;
+extern RT_MUTEX mutexRobot;
+extern RT_MUTEX mutexServeur;
 
 /* @descripteurs des sempahore */
 extern RT_SEM semConnecterRobot;
+extern RT_SEM semRechargeWat;
 
 /* @descripteurs des files de messages */
 extern RT_QUEUE queueMsgGUI;
 
 /* @variables partagées */
-extern int etatCommMoniteur;
-extern int etatCommRobot;
-extern DServer *serveur;
-extern DRobot *robot;
-extern DMovement *move;
+extern int etatCommMoniteur;// pas besoin de mutex car une seule tache s'en sert
+extern int etatCommRobot; // proteger par mutexEtat
+extern DServer *serveur; // proteger avec mutexServeur
+extern DRobot *robot; // proteger avec mutexRobot 
+extern DMovement *move; // proteger par mutex move
 
 /* @constantes */
 extern int MSG_QUEUE_SIZE;
@@ -39,6 +43,7 @@ extern int PRIORITY_TSERVEUR;
 extern int PRIORITY_TCONNECT;
 extern int PRIORITY_TMOVE;
 extern int PRIORITY_TENVOYER;
+extern int PRIORITY_TRECHARGEWAT;
 
 #endif	/* GLOBAL_H */
 
