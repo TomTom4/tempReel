@@ -2,9 +2,65 @@
 
 int write_in_queue(RT_QUEUE *msgQueue, void * data, int size);
 
+
+void imageThread(void * arg){
+    RTIME startTime;
+    DImage *image = d_new_image();
+    DArena *arena = d_new_arena();
+    DPosition *position = d_new_position();
+    DJpegimage *jpeg = d_new_jpegimage();
+    DMessage *message = d_new_message();
+   
+
+    CvCapture* capture =cvCreateCameraCapture(-1);
+    if (!capture){
+        printf("Error. Cannot capture.");
+        exit(-1);
+    }
+    
+    while (1){
+        startTime = rt_timer_read();
+        IplImage* frame = cvQueryFrame(capture);
+        if(!frame){
+            printf("Error. Cannot get the frame.");
+            break;
+        }
+        d_image_set_ipl(image, frame);
+
+        rt_mutex_acquire(&mutexPosition, TM_INFINITE);
+        rt_mutex_acquire(&mutexArena, TM_INFINITE);
+        if(computing_position == 1 || finding_arena == 1){
+            arena = d_image_compute_arena_position(image);
+            if(arena == NULL){
+                DAction *action = d_new_action();
+                d_action_set_order(action, ACTION_ARENA_FAILED);
+                //TODO send action
+                rt_printf("Arena wasn't found\n");
+                continue;
+            }
+        }
+        if (computing_position == 1){
+            position = d_image_compute_robot_position(image, arena);
+            d_imageshop_draw_position(image, position);
+        }else if(finding_arena == 1){
+            d_imageshop_draw_arena(image, arena);
+        }
+        rt_mutex_release(&mutexArena); 
+        rt_mutex_release(&mutexPosition); 
+
+        d_jpegimage_compress(jpeg, image);
+        d_message_put_jpeg_image(message, jpeg);
+        write_in_queue(&queueMsgGUI, message, sizeof (DMessage));
+
+        rt_task_sleep_until(startTime + 600*1.0e6); 
+    }
+    cvReleaseCapture(&capture);
+}
+
 void envoyer(void * arg) {
     DMessage *msg;
     int err;
+    
 
     while (1) {
         rt_printf("tenvoyer : Attente d'un message\n");
@@ -82,6 +138,16 @@ void communiquer(void *arg) {
                             rt_printf("tserver : Action connecter robot\n");
                             rt_sem_v(&semConnecterRobot);
                             break;
+                        case ACTION_FIND_ARENA:
+                            rt_mutex_acquire(&mutexArena, TM_INFINITE);
+                            finding_arena = 1;
+                            rt_mutex_release(&mutexArena);
+                           break;
+                        case ACTION_COMPUTE_CONTINUOUSLY_POSITION:
+                            rt_mutex_acquire(&mutexPosition, TM_INFINITE);
+                            computing_position = 1;
+                            rt_mutex_release(&mutexPosition);                           
+                           break;
                     }
                     break;
                 case MESSAGE_TYPE_MOVEMENT:

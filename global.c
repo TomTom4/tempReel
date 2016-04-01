@@ -15,6 +15,10 @@ RT_TASK tenvoyer;
 RT_MUTEX mutexEtat;
 RT_MUTEX mutexMove;
 
+RT_MUTEX mutexArena;
+RT_MUTEX mutexPosition;
+
+
 RT_SEM semConnecterRobot;
 
 RT_QUEUE queueMsgGUI;
@@ -24,6 +28,9 @@ int etatCommRobot = 1;
 DRobot *robot;
 DMovement *move;
 DServer *serveur;
+
+int finding_arena = 0;
+int computing_position = 0;
 
 
 int MSG_QUEUE_SIZE = 10;

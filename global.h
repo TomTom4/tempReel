@@ -15,10 +15,13 @@ extern RT_TASK tServeur;
 extern RT_TASK tconnect;
 extern RT_TASK tmove;
 extern RT_TASK tenvoyer;
+extern RT_TASK tImage;
 
 /* @descripteurs des mutex */
 extern RT_MUTEX mutexEtat;
 extern RT_MUTEX mutexMove;
+extern RT_MUTEX mutexArena;
+extern RT_MUTEX mutexPosition;
 
 /* @descripteurs des sempahore */
 extern RT_SEM semConnecterRobot;
@@ -32,6 +35,9 @@ extern int etatCommRobot;
 extern DServer *serveur;
 extern DRobot *robot;
 extern DMovement *move;
+
+extern int computing_position;
+extern int finding_arena;
 
 /* @constantes */
 extern int MSG_QUEUE_SIZE;
