@@ -9,6 +9,7 @@
 
 RT_TASK tServeur;
 RT_TASK tconnect;
+RT_TASK tImage;
 RT_TASK tmove;
 RT_TASK tenvoyer;
 RT_TASK trechargewat;
@@ -44,3 +45,4 @@ int PRIORITY_TCONNECT = 1 ;
 int PRIORITY_TMOVE = 30;
 int PRIORITY_TENVOYER = 2;
 int PRIORITY_TRECHARGEWAT = 5;
+int PRIORITY_TIMAGE = 25;

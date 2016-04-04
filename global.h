@@ -50,6 +50,7 @@ extern int PRIORITY_TCONNECT;
 extern int PRIORITY_TMOVE;
 extern int PRIORITY_TENVOYER;
 extern int PRIORITY_TRECHARGEWAT;
+extern int PRIORITY_TIMAGE;
 
 #endif	/* GLOBAL_H */
 

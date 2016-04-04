@@ -107,7 +107,7 @@ void initStruct(void) {
         exit(EXIT_FAILURE);
     }
 
-    if (err = rt_task_create(&tImage, NULL, 0, PRIORITY_TENVOYER, 0)) {
+    if (err = rt_task_create(&tImage, NULL, 0, PRIORITY_TIMAGE, 0)) {
         rt_printf("Error task create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
@@ -164,4 +164,5 @@ void deleteTasks() {
     rt_task_delete(&tmove);
     rt_task_delete(&tImage);
     rt_task_delete(&trechargewat);
+    rt_task_delete(&tenvoyer);
 }

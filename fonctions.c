@@ -6,6 +6,7 @@ int write_in_queue(RT_QUEUE *msgQueue, void * data, int size);
 
 
 void imageThread(void * arg){
+    rt_printf("tImage : start\n");
     RTIME startTime;
     DImage *image = d_new_image();
     DArena *arena = d_new_arena();
@@ -13,6 +14,7 @@ void imageThread(void * arg){
     DJpegimage *jpeg = d_new_jpegimage();
     DMessage *message = d_new_message();
    
+    DMessage *testMes = d_new_message();
 
     CvCapture* capture =cvCreateCameraCapture(-1);
     if (!capture){
@@ -21,12 +23,16 @@ void imageThread(void * arg){
     }
     
     while (1){
+        rt_printf("tImage : start periodique\n");
         startTime = rt_timer_read();
         IplImage* frame = cvQueryFrame(capture);
         if(!frame){
             printf("Error. Cannot get the frame.");
             break;
         }
+
+        cvSaveImage("foo.png", frame, NULL);
+
         d_image_set_ipl(image, frame);
 
         rt_mutex_acquire(&mutexPosition, TM_INFINITE);
@@ -39,6 +45,9 @@ void imageThread(void * arg){
                 //TODO send action
                 rt_printf("Arena wasn't found\n");
                 continue;
+            }else{
+                 rt_printf("Arena was found :)\n");
+                //TODO send ACTION_ARENA_IS_FOUND
             }
         }
         if (computing_position == 1){
@@ -47,17 +56,38 @@ void imageThread(void * arg){
         }else if(finding_arena == 1){
             d_imageshop_draw_arena(image, arena);
         }
+        finding_arena = 0;
         rt_mutex_release(&mutexArena); 
         rt_mutex_release(&mutexPosition); 
 
+        d_image_print(image);
+        
         d_jpegimage_compress(jpeg, image);
-        d_message_put_jpeg_image(message, jpeg);
-        write_in_queue(&queueMsgGUI, message, sizeof (DMessage));
+        //jpeg->jpegimage_print(jpeg);
+        d_jpegimage_print(jpeg);
+        cvSaveImage("bar.jpeg", d_jpegimage_get_data(jpeg), NULL);
+
+        message->put_jpeg_image(message, jpeg);
+        message->print(message, 10);        
+        if (write_in_queue(&queueMsgGUI, message, sizeof (DMessage)) < 0) {
+            message->free(message);
+        }
+        
+        //testMes = d_new_message();
+        //testMes->put_string(testMes, "test");
+        //testMes->print(testMes, 100);       
+        //if (write_in_queue(&queueMsgGUI, testMes, sizeof (DMessage)) < 0) {
+        //    testMes->free(testMes);
+        //}
 
         rt_task_sleep_until(startTime + 600*1.0e6); 
+        rt_printf("tImage : end periodique\n");
     }
     cvReleaseCapture(&capture);
 }
+
+
+
 
 void envoyer(void * arg) {
     DMessage *msg;
@@ -185,6 +215,11 @@ void communiquer(void *arg) {
                             computing_position = 1;
                             rt_mutex_release(&mutexPosition);                           
                            break;
+                        case ACTION_STOP_COMPUTE_POSITION:
+                            rt_mutex_acquire(&mutexPosition, TM_INFINITE);
+                            computing_position = 0;
+                            rt_mutex_release(&mutexPosition);                           
+                           break;
                     }
                     break;
                 case MESSAGE_TYPE_MOVEMENT:
@@ -298,10 +333,11 @@ int write_in_queue(RT_QUEUE *msgQueue, void * data, int size) {
     msg = rt_queue_alloc(msgQueue, size);
     memcpy(msg, &data, size);
 
-    if ((err = rt_queue_send(msgQueue, msg, sizeof (DMessage), Q_NORMAL)) < 0) {
+    if ((err = rt_queue_send(msgQueue, msg, size, Q_NORMAL)) < 0) {
         rt_printf("Error msg queue send: %s\n", strerror(-err));
+    }else{
+       rt_printf("on a envoyer un message : %s\n",(char*)msg);
     }
-    rt_printf("on a envoyer un message : %s\n",(char*)msg);
     rt_queue_free(&queueMsgGUI, msg);
 
     return err;
