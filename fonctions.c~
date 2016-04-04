@@ -13,9 +13,9 @@ void envoyer(void * arg) {
         if ((err = rt_queue_read(&queueMsgGUI, &msg, sizeof (DMessage), TM_INFINITE)) >= 0) {
             rt_printf("tenvoyer : envoi d'un message au moniteur\n");
             rt_mutex_acquire(&mutexServeur,TM_INFINITE);//acquisition d'un mutex 
-            rt_printf("tenvoyer : on a pris mutexServer\n");
+            rt_printf("tenvoyer : on a pris mutexServer\n");//ce message ne s'affiche jamais... 
             serveur->send(serveur, msg);
-            //rt_sem_v(&semReadyToReceive);
+            rt_sem_v(&semReadyToReceive);
             rt_mutex_release(&mutexServeur);
             rt_printf("tenvoyer : message envoyé ! \n");
             msg->free(msg);
