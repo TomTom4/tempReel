@@ -91,8 +91,7 @@ void imageThread(void * arg){
 
 
 
-void
-envoyer (void *arg)
+void envoyer (void *arg)
 {
   DMessage *msg;
   int err;
@@ -119,8 +118,7 @@ envoyer (void *arg)
     }
 }
 
-void
-connecter (void *arg)
+void connecter (void *arg)
 {
   int status;
   DMessage *message;
@@ -181,142 +179,74 @@ connecter (void *arg)
     }
 }
 
-<<<<<<< HEAD
-void communiquer(void *arg) {
-    DMessage *msg = d_new_message();
+
+void communiquer (void *arg)
+{
+    DMessage *msg = d_new_message ();
     int var1 = 1;
     int num_msg = 0;
 
-    rt_printf("tserver : Début de l'exécution de serveur\n");
-    
-    rt_mutex_acquire(&mutexServeur,TM_INFINITE);
-    serveur->open(serveur, "8000");
-    rt_mutex_release(&mutexServeur);//on rend le mutex donc tkt
-    
-    rt_printf("tserver : Connexion\n");
+    rt_printf ("tserver : Début de l'exécution de serveur\n");
 
-    rt_mutex_acquire(&mutexEtat, TM_INFINITE);
+    rt_mutex_acquire (&mutexServeur, TM_INFINITE);
+    serveur->open (serveur, "8000");
+    rt_mutex_release (&mutexServeur);	//on rend le mutex donc tkt
+
+    rt_printf ("tserver : Connexion\n");
+
+    rt_mutex_acquire (&mutexEtat, TM_INFINITE);
     etatCommMoniteur = 0;
-    rt_mutex_release(&mutexEtat);
+    rt_mutex_release (&mutexEtat);
 
-    while (var1 > 0) {
-        rt_printf("tserver : Attente d'un message\n");
-        
-        rt_mutex_acquire(&mutexServeur,TM_INFINITE);
-        var1 = serveur->receive(serveur, msg);
-        rt_mutex_release(&mutexServeur);//on rend le mutex donc tkt
+    while (var1 > 0){
+        rt_printf ("tserver : Attente d'un message\n");
+
+        rt_mutex_acquire (&mutexServeur, TM_INFINITE);
+        var1 = serveur->receive (serveur, msg);
+        rt_mutex_release (&mutexServeur);	//on rend le mutex donc tkt
         num_msg++;
-        if (var1 > 0) {
-            switch (msg->get_type(msg)) {
+        if (var1 > 0){   
+            switch (msg->get_type (msg)){
                 case MESSAGE_TYPE_ACTION:
-                    rt_printf("tserver : Le message %d reçu est une action\n",
-                            num_msg);
-                    DAction *action = d_new_action();
-                    action->from_message(action, msg);
-                    switch (action->get_order(action)) {
-                        case ACTION_CONNECT_ROBOT:
-                            rt_printf("tserver : Action connecter robot: on relache le semaphore\n");
-                            rt_sem_v(&semConnecterRobot);
-                            break;
-                        case ACTION_FIND_ARENA:
-                            rt_mutex_acquire(&mutexArena, TM_INFINITE);
-                            finding_arena = 1;
-                            rt_mutex_release(&mutexArena);
-                           break;
-                        case ACTION_COMPUTE_CONTINUOUSLY_POSITION:
-                            rt_mutex_acquire(&mutexPosition, TM_INFINITE);
-                            computing_position = 1;
-                            rt_mutex_release(&mutexPosition);                           
-                           break;
+                    rt_printf ("tserver : Le message %d reçu est une action\n",
+                     num_msg);
+                    DAction *action = d_new_action ();
+                    action->from_message (action, msg);
+    	            switch (action->get_order (action)){
+        		        case ACTION_CONNECT_ROBOT:
+	                        rt_printf("tserver : Action connecter robot: on relache le semaphore\n");
+		                    rt_sem_v (&semConnecterRobot);
+		                    break;
+		                case ACTION_FIND_ARENA:
+		                    rt_mutex_acquire (&mutexArena, TM_INFINITE);
+		                    finding_arena = 1;
+                	        rt_mutex_release (&mutexArena);
+		                    break;
+		                case ACTION_COMPUTE_CONTINUOUSLY_POSITION:
+		                    rt_mutex_acquire (&mutexPosition, TM_INFINITE);
+		                    computing_position = 1;
+		                    rt_mutex_release (&mutexPosition);
+		                    break;
                         case ACTION_STOP_COMPUTE_POSITION:
                             rt_mutex_acquire(&mutexPosition, TM_INFINITE);
                             computing_position = 0;
                             rt_mutex_release(&mutexPosition);                           
-                           break;
-                    }
-                    break;
-                case MESSAGE_TYPE_MOVEMENT:
-                    rt_printf("tserver : Le message reçu %d est un mouvement\n",
-                            num_msg);
-                    rt_mutex_acquire(&mutexMove, TM_INFINITE);
-                    move->from_message(move, msg);
-                    move->print(move);
-                    rt_mutex_release(&mutexMove);
+                            break;
+		            }	   
+                    break;       
+	            case MESSAGE_TYPE_MOVEMENT:
+                    rt_printf ("tserver : Le message reçu %d est un mouvement\n", num_msg);
+                    rt_mutex_acquire (&mutexMove, TM_INFINITE);
+                    move->from_message (move, msg);
+                    move->print (move);
+                    rt_mutex_release (&mutexMove);
                     break;
             }
-        }
-=======
-void
-communiquer (void *arg)
-{
-  DMessage *msg = d_new_message ();
-  int var1 = 1;
-  int num_msg = 0;
-
-  rt_printf ("tserver : Début de l'exécution de serveur\n");
-
-  rt_mutex_acquire (&mutexServeur, TM_INFINITE);
-  serveur->open (serveur, "8000");
-  rt_mutex_release (&mutexServeur);	//on rend le mutex donc tkt
-
-  rt_printf ("tserver : Connexion\n");
-
-  rt_mutex_acquire (&mutexEtat, TM_INFINITE);
-  etatCommMoniteur = 0;
-  rt_mutex_release (&mutexEtat);
-
-  while (var1 > 0)
-    {
-      rt_printf ("tserver : Attente d'un message\n");
-
-      rt_mutex_acquire (&mutexServeur, TM_INFINITE);
-      var1 = serveur->receive (serveur, msg);
-      rt_mutex_release (&mutexServeur);	//on rend le mutex donc tkt
-      num_msg++;
-      if (var1 > 0)
-	{
-	  switch (msg->get_type (msg))
-	    {
-	    case MESSAGE_TYPE_ACTION:
-	      rt_printf ("tserver : Le message %d reçu est une action\n",
-			 num_msg);
-	      DAction *action = d_new_action ();
-	      action->from_message (action, msg);
-	      switch (action->get_order (action))
-		{
-		case ACTION_CONNECT_ROBOT:
-		  rt_printf
-		    ("tserver : Action connecter robot: on relache le semaphore\n");
-		  rt_sem_v (&semConnecterRobot);
-		  break;
-		case ACTION_FIND_ARENA:
-		  rt_mutex_acquire (&mutexArena, TM_INFINITE);
-		  finding_arena = 1;
-		  rt_mutex_release (&mutexArena);
-		  break;
-		case ACTION_COMPUTE_CONTINUOUSLY_POSITION:
-		  rt_mutex_acquire (&mutexPosition, TM_INFINITE);
-		  computing_position = 1;
-		  rt_mutex_release (&mutexPosition);
-		  break;
-		}
-	      break;
-	    case MESSAGE_TYPE_MOVEMENT:
-	      rt_printf ("tserver : Le message reçu %d est un mouvement\n",
-			 num_msg);
-	      rt_mutex_acquire (&mutexMove, TM_INFINITE);
-	      move->from_message (move, msg);
-	      move->print (move);
-	      rt_mutex_release (&mutexMove);
-	      break;
 	    }
-	}
->>>>>>> ef64005581d7ebcc5477a48cc29a7d00f055b9ff
     }
 }
 
-void
-recharge (void *arg)
+void recharge (void *arg)
 {
   int status;
 
@@ -356,8 +286,7 @@ recharge (void *arg)
     }
 }
 
-void
-deplacer (void *arg)
+void deplacer (void *arg)
 {
   int status = 1;
   int gauche;
@@ -438,8 +367,7 @@ deplacer (void *arg)
     }
 }
 
-int
-write_in_queue (RT_QUEUE * msgQueue, void *data, int size)
+int write_in_queue (RT_QUEUE * msgQueue, void *data, int size)
 {
   void *msg;
   int err;
@@ -452,7 +380,7 @@ write_in_queue (RT_QUEUE * msgQueue, void *data, int size)
    }else{
        rt_printf("on a envoyer un message : %s\n",(char*)msg);
    }
-   rt_queue_free(&queueMsgGUI, msg);
+   rt_queue_free(&msgQueue, msg);
 
   return err;
 }
