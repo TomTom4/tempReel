@@ -40,6 +40,7 @@ int PRIORITY_TCONNECT = 99 ;
 int PRIORITY_TMOVE = 0;
 int PRIORITY_TENVOYER = 98;
 int PRIORITY_TRECHARGEWAT = 5;
+=======
 int PRIORITY_TSERVEUR = 38;
 int PRIORITY_TCONNECT = 35;
 int PRIORITY_TMOVE = 40;
@@ -99,4 +100,4 @@ test_com (void *arg)
     }
 
 }
-
+>>>>>>> a0d2ce0ff5a19c9cb7ba2946535181d74f3f5276

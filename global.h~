@@ -30,9 +30,11 @@ extern RT_MUTEX mutexServeur;
 /* @descripteurs des sempahore */
 extern RT_SEM semConnecterRobot;
 extern RT_SEM semRechargeWat;
+<<<<<<< HEAD
 extern RT_SEM semReadyToReceive;
+=======
 extern RT_SEM semDeplacer;
-
+>>>>>>> ef64005581d7ebcc5477a48cc29a7d00f055b9ff
 
 /* @descripteurs des files de messages */
 extern RT_QUEUE queueMsgGUI;

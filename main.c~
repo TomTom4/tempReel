@@ -78,7 +78,8 @@ initStruct (void){
       rt_printf ("Error mutex create: %s\n", strerror (-err));
       exit (EXIT_FAILURE);
     }
-
+=======
+>>>>>>> a0d2ce0ff5a19c9cb7ba2946535181d74f3f5276
 
 }
 void initStruct(void) {
@@ -159,13 +160,14 @@ void initStruct(void) {
     move = d_new_movement();
     serveur = d_new_server();
 
-
+<<<<<<< HEAD
   /* Creation des structures globales du projet */
   robot = d_new_robot ();
   move = d_new_movement ();
   serveur = d_new_server ();
 
-
+=======
+>>>>>>> a0d2ce0ff5a19c9cb7ba2946535181d74f3f5276
 }
 
 void
@@ -206,6 +208,14 @@ startTasks ()
 }
 
 
+<<<<<<< HEAD
+void deleteTasks () {
+  rt_task_delete (&tServeur);
+  rt_task_delete (&tconnect);
+  rt_task_delete (&tmove);
+  rt_task_delete (&tImage);
+  rt_task_delete (&trechargewat);
+=======
 void deleteTasks() {
     rt_task_delete(&tServeur);
     rt_task_delete(&tconnect);
@@ -213,5 +223,5 @@ void deleteTasks() {
     rt_task_delete(&tImage);
     rt_task_delete(&trechargewat);
     rt_task_delete(&tenvoyer);
-
+>>>>>>> a0d2ce0ff5a19c9cb7ba2946535181d74f3f5276
 }

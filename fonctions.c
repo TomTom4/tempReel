@@ -128,7 +128,7 @@ void connecter (void *arg)
   while (1)
     {
       rt_printf ("tconnect : Attente du sémaphore semConnecterRobot\n");
-      rt_sem_p (&semConnecterRobot, TM_INFINITE);	//prise de semaphore avant connexion:--> a quoi sert ce semaphore?  /!\
+      rt_sem_p (&semConnecterRobot, TM_INFINITE);	//prise de semaphore avant connexion:--> 
 
       rt_printf ("tconnect : Ouverture de la communication avec le robot\n");
       rt_mutex_acquire (&mutexRobot, TM_INFINITE);	//acquisition d'un mutex
