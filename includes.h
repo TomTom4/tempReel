@@ -24,5 +24,4 @@
 
 #include "../lib_destijl/headers/dincludes.h"
 
-#endif	/* INCLUDES_H */
-
+#endif /* INCLUDES_H */

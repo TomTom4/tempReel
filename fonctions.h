@@ -12,16 +12,17 @@
 #include "includes.h"
 
 #ifdef	__cplusplus
-extern "C" {
+extern "C"
+{
 #endif
-        void connecter (void * arg);
-        void communiquer(void *arg);
-        void deplacer(void *arg);
-        void envoyer(void *arg);
-        void recharge(void *arg);
+  void connecter (void *arg);
+  void communiquer (void *arg);
+  void deplacer (void *arg);
+  void envoyer (void *arg);
+  void imageThread (void *arg);
+  void recharge (void *arg);
 #ifdef	__cplusplus
 }
 #endif
 
-#endif	/* FONCTIONS_H */
-
+#endif				/* FONCTIONS_H */
