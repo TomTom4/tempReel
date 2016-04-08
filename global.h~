@@ -11,12 +11,14 @@
 #include "includes.h"
 
 /* @descripteurs des tâches */
+
 extern RT_TASK tServeur;
 extern RT_TASK tconnect;
 extern RT_TASK tmove;
 extern RT_TASK tenvoyer;
 extern RT_TASK tImage;
 extern RT_TASK trechargewat;
+extern RT_TASK tverifierComRobot;
 
 /* @descripteurs des mutex */
 extern RT_MUTEX mutexEtat;
@@ -30,11 +32,9 @@ extern RT_MUTEX mutexServeur;
 /* @descripteurs des sempahore */
 extern RT_SEM semConnecterRobot;
 extern RT_SEM semRechargeWat;
-<<<<<<< HEAD
 extern RT_SEM semReadyToReceive;
-=======
 extern RT_SEM semDeplacer;
->>>>>>> ef64005581d7ebcc5477a48cc29a7d00f055b9ff
+
 
 /* @descripteurs des files de messages */
 extern RT_QUEUE queueMsgGUI;
@@ -57,5 +57,6 @@ extern int PRIORITY_TMOVE;
 extern int PRIORITY_TENVOYER;
 extern int PRIORITY_TRECHARGEWAT;
 extern int PRIORITY_TIMAGE;
+extern int PRIORITY_VERIF; 
 
 #endif /* GLOBAL_H */

@@ -20,6 +20,7 @@ extern "C"
   void deplacer (void *arg);
   void envoyer (void *arg);
   void imageThread (void *arg);
+  void verifier (void * arg); 
   void recharge (void *arg);
 #ifdef	__cplusplus
 }

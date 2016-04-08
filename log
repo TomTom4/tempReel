@@ -1,0 +1,43 @@
+drobot.c: In function ‘d_robot_manage_cmd’:
+drobot.c:258:13: warning: pointer targets in passing argument 1 of ‘verify_checksum’ differ in signedness [-Wpointer-sign]
+             checksum = verify_checksum(ans);
+             ^
+drobot.c:160:6: note: expected ‘unsigned char *’ but argument is of type ‘char *’
+ char verify_checksum(unsigned char *ptr) {
+      ^
+drobot.c: In function ‘d_robot_open_device’:
+drobot.c:296:20: warning: unused variable ‘options’ [-Wunused-variable]
+     struct termios options;
+                    ^
+fonctions.c: In function ‘write_in_queue’:
+fonctions.c:403:4: warning: passing argument 1 of ‘rt_queue_free’ from incompatible pointer type [enabled by default]
+    rt_queue_free(&msgQueue, msg);
+    ^
+In file included from includes.h:20:0,
+                 from global.h:11,
+                 from fonctions.h:11,
+                 from fonctions.c:1:
+../xenomai/include/native/queue.h:186:5: note: expected ‘struct RT_QUEUE *’ but argument is of type ‘struct RT_QUEUE **’
+ int rt_queue_free(RT_QUEUE *q,
+     ^
+fonctions.o: dans la fonction « connecter »:
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/fonctions.c:154: référence indéfinie vers « semDeplacer »
+fonctions.o: dans la fonction « communiquer »:
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/fonctions.c:220: référence indéfinie vers « mutexArena »
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/fonctions.c:221: référence indéfinie vers « finding_arena »
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/fonctions.c:222: référence indéfinie vers « mutexArena »
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/fonctions.c:225: référence indéfinie vers « mutexPosition »
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/fonctions.c:226: référence indéfinie vers « computing_position »
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/fonctions.c:227: référence indéfinie vers « mutexPosition »
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/fonctions.c:230: référence indéfinie vers « mutexPosition »
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/fonctions.c:231: référence indéfinie vers « computing_position »
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/fonctions.c:232: référence indéfinie vers « mutexPosition »
+fonctions.o: dans la fonction « deplacer »:
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/fonctions.c:295: référence indéfinie vers « semDeplacer »
+main.o: dans la fonction « initStruct »:
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/main.c:66: référence indéfinie vers « mutexArena »
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/main.c:70: référence indéfinie vers « mutexPosition »
+main.o: dans la fonction « startTasks »:
+/home/pouvreau/Bureau/tempReel/projet_destijl_2016/projet_initial/main.c:165: référence indéfinie vers « imageThread »
+collect2: error: ld returned 1 exit status
+make: *** [main] Erreur 1

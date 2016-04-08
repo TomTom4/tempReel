@@ -50,37 +50,8 @@ main (int argc, char **argv)
   deleteTasks ();
 
   return 0;
-<<<<<<< HEAD
 }
 
-
-void
-initStruct (void){
-  int err;
-  /* Creation des mutex */
-  if (err = rt_mutex_create (&mutexEtat, NULL))
-    {
-      rt_printf ("Error mutex create: %s\n", strerror (-err));
-      exit (EXIT_FAILURE);
-    }
-  if (err = rt_mutex_create (&mutexMove, NULL))
-    {
-      rt_printf ("Error mutex create: %s\n", strerror (-err));
-      exit (EXIT_FAILURE);
-    }
-  if (err = rt_mutex_create (&mutexArena, NULL))
-    {
-      rt_printf ("Error mutex create: %s\n", strerror (-err));
-      exit (EXIT_FAILURE);
-    }
-  if (err = rt_mutex_create (&mutexPosition, NULL))
-    {
-      rt_printf ("Error mutex create: %s\n", strerror (-err));
-      exit (EXIT_FAILURE);
-    }
-
-
-}
 void initStruct(void) {
     int err;
     /* Creation des mutex */
@@ -119,7 +90,10 @@ void initStruct(void) {
         rt_printf("Error semaphore create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
-    
+    if (err = rt_sem_create(&semVerif, NULL, 0, S_FIFO)) {
+        rt_printf("Error semaphore create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
     /* Creation des taches */
     if (err = rt_task_create(&tServeur, NULL, 0, PRIORITY_TSERVEUR, 0)) {
         rt_printf("Error task create: %s\n", strerror(-err));
@@ -143,7 +117,12 @@ void initStruct(void) {
         exit(EXIT_FAILURE);
     }
     
+    
    if (err = rt_task_create(&trechargewat, NULL, 0, PRIORITY_TRECHARGEWAT, 0)) {
+        rt_printf("Error task create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+    }
+    if (err = rt_task_create(&tverifierComRobot, NULL, 0, PRIORITY_VERIF, 0)) {
         rt_printf("Error task create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
     }
@@ -158,12 +137,6 @@ void initStruct(void) {
     robot = d_new_robot();
     move = d_new_movement();
     serveur = d_new_server();
-
-
-  /* Creation des structures globales du projet */
-  robot = d_new_robot ();
-  move = d_new_movement ();
-  serveur = d_new_server ();
 
 
 }
@@ -192,13 +165,18 @@ startTasks ()
       rt_printf ("Error task start: %s\n", strerror (-err));
       exit (EXIT_FAILURE);
     }
-  if (err = rt_task_start (&tImage, &imageThread, NULL))
+  /*if (err = rt_task_start (&tImage, &imageThread, NULL))
+    {
+      rt_printf ("Error task start: %s\n", strerror (-err));
+      exit (EXIT_FAILURE);
+    }*/
+
+  if (err = rt_task_start (&trechargewat, &recharge, NULL))
     {
       rt_printf ("Error task start: %s\n", strerror (-err));
       exit (EXIT_FAILURE);
     }
-
-  if (err = rt_task_start (&trechargewat, &recharge, NULL))
+  if (err = rt_task_start (&tverifierComRobot, &verifier, NULL))
     {
       rt_printf ("Error task start: %s\n", strerror (-err));
       exit (EXIT_FAILURE);
@@ -210,8 +188,9 @@ void deleteTasks() {
     rt_task_delete(&tServeur);
     rt_task_delete(&tconnect);
     rt_task_delete(&tmove);
-    rt_task_delete(&tImage);
+   // rt_task_delete(&tImage);
     rt_task_delete(&trechargewat);
     rt_task_delete(&tenvoyer);
+    rt_task_delete(&tverifierComRobot);
 
 }

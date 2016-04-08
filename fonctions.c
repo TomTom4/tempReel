@@ -105,10 +105,10 @@ void envoyer (void *arg)
 			  TM_INFINITE)) >= 0)
 	{
 	  rt_printf ("tenvoyer : envoi d'un message au moniteur\n");
-	  rt_mutex_acquire (&mutexServeur, TM_INFINITE);	//acquisition d'un mutex --> probleme ! on ne le passe pas... 
-	  rt_printf ("on a pris mutexServer\n");	//ce message ne s'affiche jamais... 
+	  rt_mutex_acquire (&mutexServeur, TM_INFINITE);	//acquisition d'un mutex 
+	  rt_printf ("on a pris mutexServer\n");	
 	  serveur->send (serveur, msg);
-	  rt_mutex_release (&mutexServeur);	//on rend le mutex donc tkt
+	  rt_mutex_release (&mutexServeur);	//on rend le mutex 
 	  msg->free (msg);
 	}
       else
@@ -128,31 +128,31 @@ void connecter (void *arg)
   while (1)
     {
       rt_printf ("tconnect : Attente du sémaphore semConnecterRobot\n");
-      rt_sem_p (&semConnecterRobot, TM_INFINITE);	//prise de semaphore avant connexion:--> 
+      rt_sem_p (&semConnecterRobot, TM_INFINITE);	//prise de semaphore avant connexion: 
 
       rt_printf ("tconnect : Ouverture de la communication avec le robot\n");
+      
       rt_mutex_acquire (&mutexRobot, TM_INFINITE);	//acquisition d'un mutex
       status = robot->open_device (robot);
-      rt_mutex_release (&mutexRobot);	//on rend le mutex donc tkt
+      rt_mutex_release (&mutexRobot);	//on rend le mutex
       rt_printf ("tconnect : status du robot : %d\n", status);
 
-      //d_robot_print(robot);
       rt_mutex_acquire (&mutexEtat, TM_INFINITE);	//acquisition d'un mutex
       etatCommRobot = status;	//etatCommRobot est une variable partagé avec deplacer 
       rt_mutex_release (&mutexEtat);	//on rend le mutex donc tkt
       if (status == STATUS_OK)
 	{
 	  rt_mutex_acquire (&mutexRobot, TM_INFINITE);	//acquisition d'un mutex
-	  //tentatives de demarrage du robot & activation du watchdog
-	  status = robot->start (robot);	// start_insecurely -> start
-	  rt_mutex_release (&mutexRobot);	//on rend le mutex donc tkt
+	 
+	  status = robot->start (robot);	
+	  rt_mutex_release (&mutexRobot);	//on rend le mutex 
 
 	  if (status == STATUS_OK)
 	    {
 	      rt_printf ("tconnect : Robot démarrer\n");
-	      //d_robot_print(robot);
 	      rt_sem_v (&semRechargeWat);
 	      rt_sem_v (&semDeplacer);
+	      rt_sem_v (&semVerif);
 	    }
 	  else
 	    {
@@ -201,9 +201,9 @@ void communiquer (void *arg)
     while (var1 > 0){
         rt_printf ("tserver : Attente d'un message\n");
 
-        rt_mutex_acquire (&mutexServeur, TM_INFINITE);
+        
         var1 = serveur->receive (serveur, msg);
-        rt_mutex_release (&mutexServeur);	//on rend le mutex donc tkt
+     
         num_msg++;
         if (var1 > 0){   
             switch (msg->get_type (msg)){
@@ -263,7 +263,7 @@ void recharge (void *arg)
       rt_printf ("trecharge : Activation périodique\n");
 
       //Test de la communication 
-      test_com (&recharge);
+      //test_com (&recharge);
 
       //Obtenir le statut du robot
       rt_mutex_acquire (&mutexRobot, TM_INFINITE);
@@ -271,7 +271,7 @@ void recharge (void *arg)
       rt_mutex_release (&mutexRobot);
 
       //Connexion perdue
-      if (status = !STATUS_OK)
+      if (status != STATUS_OK)
 	{
 	  //on attend une nouvelle possibilité de se connecter
 	  rt_sem_p (&semRechargeWat, TM_INFINITE);
@@ -291,7 +291,7 @@ void deplacer (void *arg)
   int status = 1;
   int gauche;
   int droite;
-  DMessage *message;
+ 
 
   rt_sem_p (&semDeplacer, TM_INFINITE);
   rt_printf ("tmove : Debut de l'éxecution de periodique à 200ms\n");
@@ -305,7 +305,7 @@ void deplacer (void *arg)
       rt_printf ("tmove : Activation périodique\n");
 
       //test de la connexion  
-      test_com (&deplacer);
+      // test_com (&deplacer);
 
       //Obtention de l'etat du robot
       rt_mutex_acquire (&mutexEtat, TM_INFINITE);
@@ -341,30 +341,52 @@ void deplacer (void *arg)
 	      break;
 	    }
 	  rt_mutex_release (&mutexMove);
-
 	  rt_mutex_acquire (&mutexRobot, TM_INFINITE);	//acquisition d'un mutex
 	  status = robot->set_motors (robot, gauche, droite);
 
-	  rt_mutex_release (&mutexRobot);	//on rend le mutex donc tkt
+	  rt_mutex_release (&mutexRobot);	//on rend le mutex 
 
-	  if (status != STATUS_OK)
-	    {
+	  if (status != STATUS_OK){
 	      rt_mutex_acquire (&mutexEtat, TM_INFINITE);
 	      etatCommRobot = status;
-	      rt_mutex_release (&mutexEtat);
+	      rt_mutex_release (&mutexEtat);	      
+	    }
+	}
+    }
+}
 
-	      message = d_new_message ();
+void verifier (void* arg){
+	DMessage *message;
+	rt_task_set_periodic (NULL, TM_NOW, 200000000);
+	int status = 0, compteur = 0; 
+	rt_sem_p (&semVerif, TM_INFINITE);
+	
+	while(1){
+	
+		 rt_task_wait_period (NULL);
+		rt_mutex_acquire (&mutexEtat, TM_INFINITE);
+		status = etatCommRobot;
+		rt_mutex_release (&mutexEtat);
+	
+		if (status == STATUS_OK)
+			compteur = 0;
+		else
+			compteur++; 
+		if (compteur > 15){   // limit 10 erreur avant d'avoir perdu la connection 
+		  message = d_new_message ();
 	      message->put_state (message, status);
 
-	      rt_printf ("tmove : [ERR] Envoi message\n");
+	      rt_printf ("tverifier : [ERR] Envoi message\n");
 	      if (write_in_queue (&queueMsgGUI, message, sizeof (DMessage)) <
 		  0)
 		{
 		  message->free (message);
 		}
-	    }
+		
+		
+		}
 	}
-    }
+
 }
 
 int write_in_queue (RT_QUEUE * msgQueue, void *data, int size)

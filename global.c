@@ -7,24 +7,35 @@
 
 #include "global.h"
 
+//*******************************************tache********************************************************
 RT_TASK tServeur;
 RT_TASK tconnect;
 RT_TASK tImage;
 RT_TASK tmove;
 RT_TASK tenvoyer;
 RT_TASK trechargewat;
+RT_TASK tverifierComRobot;
 
+//*******************************************mutex********************************************************
 RT_MUTEX mutexEtat;
 RT_MUTEX mutexMove;
 RT_MUTEX mutexRobot;
 RT_MUTEX mutexServeur;
+RT_MUTEX mutexArena;
+RT_MUTEX mutexPosition;
 
+//******************************************semaphore*******************************************************
 RT_SEM semConnecterRobot;
 RT_SEM semRechargeWat;
 RT_SEM semReadyToReceive;
-
+RT_SEM semDeplacer;
+RT_SEM semVerif; 
+//***************************************** queue  *****************************************************
 RT_QUEUE queueMsgGUI;
 
+//***************************************************************************************************************
+int computing_position;
+int finding_arena;
 int etatCommMoniteur = 1;
 int etatCommRobot = 1;
 DRobot *robot;
@@ -34,19 +45,14 @@ DServer *serveur;
 
 int MSG_QUEUE_SIZE = 10;
 
-<<<<<<< HEAD
 int PRIORITY_TSERVEUR = 3;
 int PRIORITY_TCONNECT = 99 ;
 int PRIORITY_TMOVE = 0;
-int PRIORITY_TENVOYER = 98;
 int PRIORITY_TRECHARGEWAT = 5;
-int PRIORITY_TSERVEUR = 38;
-int PRIORITY_TCONNECT = 35;
-int PRIORITY_TMOVE = 40;
 int PRIORITY_TENVOYER = 36;
-int PRIORITY_TRECHARGEWAT = 30;
 int PRIORITY_TIMAGE = 39;
-
+int PRIORITY_VERIF = 40;
+/*
 // TEST_COM ( void ) 
 //      effectue le test de communication avec le robot : au bout d'un certain nombre d'échecs,
 //      on ferme la connexion
@@ -98,5 +104,5 @@ test_com (void *arg)
       compteur = 0;
     }
 
-}
+}*/
 
