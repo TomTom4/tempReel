@@ -144,7 +144,7 @@ void connecter (void *arg)
 	{
 	  rt_mutex_acquire (&mutexRobot, TM_INFINITE);	//acquisition d'un mutex
 	 
-	  status = robot->start (robot);	
+	  status = robot->start_insecurely(robot);	
 	  rt_mutex_release (&mutexRobot);	//on rend le mutex 
 
 	  if (status == STATUS_OK)
@@ -251,7 +251,7 @@ void recharge (void *arg)
   int status;
 
   rt_sem_p (&semRechargeWat, TM_INFINITE);
-  rt_printf ("trecharge : Debut de l'éxecution periodique à 500ms\n");	//ou 1s...
+  rt_printf ("trecharge : Debut de l'éxecution periodique à 500ms\n");	
   rt_task_set_periodic (NULL, TM_NOW, 500000000);
 
   while (1)
@@ -314,9 +314,9 @@ void deplacer (void *arg)
 
 
       if (status == STATUS_OK)
-	{
+	  {
 	  rt_mutex_acquire (&mutexMove, TM_INFINITE);
-
+	  rt_printf("tmove: on a acquis le mutex Move \n");
 	  switch (move->get_direction (move))
 	    {
 	    case DIRECTION_FORWARD:
@@ -342,6 +342,7 @@ void deplacer (void *arg)
 	    }
 	  rt_mutex_release (&mutexMove);
 	  rt_mutex_acquire (&mutexRobot, TM_INFINITE);	//acquisition d'un mutex
+	  rt_printf("tmove: on prend le mutexRobot!!\n");
 	  status = robot->set_motors (robot, gauche, droite);
 
 	  rt_mutex_release (&mutexRobot);	//on rend le mutex 
@@ -372,7 +373,7 @@ void verifier (void* arg){
 			compteur = 0;
 		else
 			compteur++; 
-		if (compteur > 15){   // limit 10 erreur avant d'avoir perdu la connection 
+		if (compteur > 10){   // limit 10 erreur avant d'avoir perdu la connection 
 		  message = d_new_message ();
 	      message->put_state (message, status);
 

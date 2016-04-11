@@ -29,7 +29,7 @@ RT_SEM semConnecterRobot;
 RT_SEM semRechargeWat;
 RT_SEM semReadyToReceive;
 RT_SEM semDeplacer;
-RT_SEm semVerif; 
+RT_SEM semVerif; 
 //***************************************** queue  *****************************************************
 RT_QUEUE queueMsgGUI;
 
