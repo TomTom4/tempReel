@@ -20,7 +20,7 @@ void imageThread(void * arg){
     
    
     DMessage *testMes = d_new_message();
-
+	DJpegimage *jpeg = d_new_jpegimage();
     CvCapture* capture = cvCreateCameraCapture(-1);
     if (!capture){
         printf("Error. Can not capture an image.");
@@ -29,7 +29,6 @@ void imageThread(void * arg){
     
     while (1){
     	// it needs to be instanciated here at every loop time else segFault every time you free 
-    	DJpegimage *jpeg = d_new_jpegimage();
     	DMessage *message = d_new_message();
     	
     	
@@ -140,19 +139,20 @@ void connecter (void *arg)
       status = robot->open_device (robot);
       rt_mutex_release (&mutexRobot);	//on rend le mutex
       rt_printf ("tconnect : status du robot : %d\n", status);
-
+	  rt_printf("tconnect : step1\n");
       rt_mutex_acquire (&mutexEtat, TM_INFINITE);	//acquisition d'un mutex
       etatCommRobot = status;	//etatCommRobot est une variable partagé avec deplacer 
       rt_mutex_release (&mutexEtat);	//on rend le mutex donc tkt
       
-      rt_printf("tconnect : on a ecrit l'etat du robot\n");
+      rt_printf("tconnect : step2\n");
       if (status == STATUS_OK)
 	{
+	  rt_printf("tconnect : step3\n");
 	  rt_mutex_acquire (&mutexRobot, TM_INFINITE);	//acquisition d'un mutex
-	 
+	  rt_printf("tconnect : step4\n");		 
 	  status = robot->start_insecurely(robot);	// les watchdogs ne fonctionnent apparament plus sur les robot
 	  rt_mutex_release (&mutexRobot);	//on rend le mutex 
-
+	  rt_printf("tconnect : step5\n");
 	  if (status == STATUS_OK)
 	    {
 	      rt_printf ("tconnect : Robot démarrer\n");
@@ -391,6 +391,10 @@ void verifier (void* arg){
 		      message->free (message);
 		  }
           rt_mutex_release(&mutexQueue);
+          
+          rt_mutex_acquire (&mutexRobot, TM_INFINITE);	//acquisition d'un mutex
+	  	  robot->close_com (robot);
+	  	  rt_mutex_release (&mutexRobot);	//on rend le mutex 
 		
 		
 		}

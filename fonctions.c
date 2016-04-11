@@ -20,7 +20,7 @@ void imageThread(void * arg){
     
    
     DMessage *testMes = d_new_message();
-
+	DJpegimage *jpeg = d_new_jpegimage();
     CvCapture* capture = cvCreateCameraCapture(-1);
     if (!capture){
         printf("Error. Can not capture an image.");
@@ -29,7 +29,6 @@ void imageThread(void * arg){
     
     while (1){
     	// it needs to be instanciated here at every loop time else segFault every time you free 
-    	DJpegimage *jpeg = d_new_jpegimage();
     	DMessage *message = d_new_message();
     	
     	
@@ -392,6 +391,10 @@ void verifier (void* arg){
 		      message->free (message);
 		  }
           rt_mutex_release(&mutexQueue);
+          
+          rt_mutex_acquire (&mutexRobot, TM_INFINITE);	//acquisition d'un mutex
+	  	  robot->close_com (robot);
+	  	  rt_mutex_release (&mutexRobot);	//on rend le mutex 
 		
 		
 		}
