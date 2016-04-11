@@ -23,6 +23,7 @@ RT_MUTEX mutexRobot;
 RT_MUTEX mutexServeur;
 RT_MUTEX mutexArena;
 RT_MUTEX mutexPosition;
+RT_MUTEX mutexQueue;
 
 //******************************************semaphore*******************************************************
 RT_SEM semConnecterRobot;

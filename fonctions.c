@@ -7,6 +7,11 @@ int write_in_queue(RT_QUEUE *msgQueue, void * data, int size);
 
 
 void imageThread(void * arg){
+    /* This thread gets the image from the camera. 
+       If the arena or the position shall be computed,
+       it does so. Afterwards the image is compressed
+       and sended.
+    */
     rt_printf("tImage : start\n");
     RTIME startTime;
     DImage *image = d_new_image();
@@ -17,9 +22,9 @@ void imageThread(void * arg){
    
     DMessage *testMes = d_new_message();
 
-    CvCapture* capture =cvCreateCameraCapture(-1);
+    CvCapture* capture = cvCreateCameraCapture(-1);
     if (!capture){
-        printf("Error. Cannot capture.");
+        printf("Error. Can not capture an image.");
         exit(-1);
     }
     
@@ -28,7 +33,7 @@ void imageThread(void * arg){
         startTime = rt_timer_read();
         IplImage* frame = cvQueryFrame(capture);
         if(!frame){
-            printf("Error. Cannot get the frame.");
+            printf("Error. Can not get the frame.");
             break;
         }
 
@@ -43,7 +48,7 @@ void imageThread(void * arg){
             if(arena == NULL){
                 DAction *action = d_new_action();
                 d_action_set_order(action, ACTION_ARENA_FAILED);
-                //TODO send action
+                //TODO send ACTION_ARENA_NOT_FOUND
                 rt_printf("Arena wasn't found\n");
                 continue;
             }else{
@@ -64,27 +69,22 @@ void imageThread(void * arg){
         d_image_print(image);
         
         d_jpegimage_compress(jpeg, image);
-        //jpeg->jpegimage_print(jpeg);
         d_jpegimage_print(jpeg);
         cvSaveImage("bar.jpeg", d_jpegimage_get_data(jpeg), NULL);
 
         message->put_jpeg_image(message, jpeg);
-        message->print(message, 10);        
-        if (write_in_queue(&queueMsgGUI, message, sizeof (DMessage)) < 0) {
-            message->free(message);
-        }
-        
-        //testMes = d_new_message();
-        //testMes->put_string(testMes, "test");
-        //testMes->print(testMes, 100);       
-        //if (write_in_queue(&queueMsgGUI, testMes, sizeof (DMessage)) < 0) {
-        //    testMes->free(testMes);
-        //}
+        message->print(message, 10);   
 
+        rt_mutex_acquire(&mutexQueue, TM_INFINITE);     
+        /*if (write_in_queue(&queueMsgGUI, message, sizeof (DMessage)) < 0) {
+            message->free(message);
+        } */
+        rt_mutex_release(&mutexQueue);
         rt_task_sleep_until(startTime + 600*1.0e6); 
         rt_printf("tImage : end periodique\n");
     }
     cvReleaseCapture(&capture);
+
 }
 
 
@@ -171,11 +171,12 @@ void connecter (void *arg)
 
       rt_printf ("tconnecter : [ERR] Envoi message\n");
       message->print (message, 100);
-
+        rt_mutex_acquire(&mutexQueue, TM_INFINITE); 
       if (write_in_queue (&queueMsgGUI, message, sizeof (DMessage)) < 0)
-	{
-	  message->free (message);
-	}
+	  {
+	      message->free (message);
+	  }
+        rt_mutex_release(&mutexQueue);
     }
 }
 
@@ -376,12 +377,13 @@ void verifier (void* arg){
 		  message = d_new_message ();
 	      message->put_state (message, status);
 
+          rt_mutex_acquire(&mutexQueue, TM_INFINITE); 
 	      rt_printf ("tverifier : [ERR] Envoi message\n");
 	      if (write_in_queue (&queueMsgGUI, message, sizeof (DMessage)) <
-		  0)
-		{
-		  message->free (message);
-		}
+		  0){
+		      message->free (message);
+		  }
+          rt_mutex_release(&mutexQueue);
 		
 		
 		}
@@ -391,18 +393,16 @@ void verifier (void* arg){
 
 int write_in_queue (RT_QUEUE * msgQueue, void *data, int size)
 {
-  void *msg;
-  int err;
+    void *msg;
+    int err;
 
-  msg = rt_queue_alloc (msgQueue, size);
-  memcpy (msg, &data, size);
+    msg = rt_queue_alloc(msgQueue, size);
+    memcpy(msg, &data, size);
 
-   if ((err = rt_queue_send(msgQueue, msg, size, Q_NORMAL)) < 0) {
+    if ((err = rt_queue_send(msgQueue, msg, sizeof (DMessage), Q_NORMAL)) < 0) {
         rt_printf("Error msg queue send: %s\n", strerror(-err));
-   }else{
-       rt_printf("on a envoyer un message : %s\n",(char*)msg);
-   }
-   rt_queue_free(&msgQueue, msg);
+    }
+    rt_queue_free(&queueMsgGUI, msg);
 
-  return err;
+    return err;
 }
