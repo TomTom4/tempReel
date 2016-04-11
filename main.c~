@@ -80,6 +80,11 @@ void initStruct(void) {
         rt_printf("Error mutex create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
       }
+    if (err = rt_mutex_create(&mutexQueue, NULL)) {
+        rt_printf("Error mutex create: %s\n", strerror(-err));
+        exit(EXIT_FAILURE);
+      }
+
 	
     /* Creation du semaphore */
     if (err = rt_sem_create(&semConnecterRobot, NULL, 0, S_FIFO)) {
@@ -188,7 +193,11 @@ void deleteTasks() {
     rt_task_delete(&tServeur);
     rt_task_delete(&tconnect);
     rt_task_delete(&tmove);
+<<<<<<< HEAD
+    //rt_task_delete(&tImage);
+=======
     rt_task_delete(&tImage);
+>>>>>>> 5164b9266ce7f5a7a3c789af64d1849fe829d1a7
     rt_task_delete(&trechargewat);
     rt_task_delete(&tenvoyer);
     rt_task_delete(&tverifierComRobot);

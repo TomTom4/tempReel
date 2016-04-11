@@ -28,6 +28,7 @@ extern RT_MUTEX mutexPosition;
 extern RT_MUTEX mutexRobot;
 extern RT_MUTEX mutexMessage;
 extern RT_MUTEX mutexServeur;
+extern RT_MUTEX mutexQueue;
 
 /* @descripteurs des sempahore */
 extern RT_SEM semConnecterRobot;

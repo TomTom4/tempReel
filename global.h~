@@ -28,12 +28,14 @@ extern RT_MUTEX mutexPosition;
 extern RT_MUTEX mutexRobot;
 extern RT_MUTEX mutexMessage;
 extern RT_MUTEX mutexServeur;
+extern RT_MUTEX mutexQueue;
 
 /* @descripteurs des sempahore */
 extern RT_SEM semConnecterRobot;
 extern RT_SEM semRechargeWat;
 extern RT_SEM semReadyToReceive;
 extern RT_SEM semDeplacer;
+extern RT_SEM semVerif; 
 
 
 /* @descripteurs des files de messages */

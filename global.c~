@@ -23,6 +23,7 @@ RT_MUTEX mutexRobot;
 RT_MUTEX mutexServeur;
 RT_MUTEX mutexArena;
 RT_MUTEX mutexPosition;
+RT_MUTEX mutexQueue;
 
 //******************************************semaphore*******************************************************
 RT_SEM semConnecterRobot;
@@ -45,11 +46,11 @@ DServer *serveur;
 
 int MSG_QUEUE_SIZE = 10;
 
-int PRIORITY_TSERVEUR = 3;
+int PRIORITY_TSERVEUR = 30;
 int PRIORITY_TCONNECT = 99 ;
-int PRIORITY_TMOVE = 0;
-int PRIORITY_TRECHARGEWAT = 5;
-int PRIORITY_TENVOYER = 36;
+int PRIORITY_TMOVE = 50;
+int PRIORITY_TRECHARGEWAT = 55 ;
+int PRIORITY_TENVOYER = 80;
 int PRIORITY_TIMAGE = 39;
 int PRIORITY_VERIF = 40;
 /*
