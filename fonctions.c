@@ -15,8 +15,8 @@ void imageThread(void * arg){
     rt_printf("tImage : start\n");
     RTIME startTime;
     DImage *image = d_new_image();
-    DArena *arena = d_new_arena();
-    DPosition *position = d_new_position();
+    	DArena *arena = d_new_arena();
+    	DPosition *position = d_new_position();
     
    
     DMessage *testMes = d_new_message();
@@ -28,7 +28,7 @@ void imageThread(void * arg){
     }
     
     while (1){
-    	//debug josué!!!
+    	// it needs to be instanciated here at every loop time else segFault every time you free 
     	DJpegimage *jpeg = d_new_jpegimage();
     	DMessage *message = d_new_message();
     	
@@ -140,17 +140,20 @@ void connecter (void *arg)
       status = robot->open_device (robot);
       rt_mutex_release (&mutexRobot);	//on rend le mutex
       rt_printf ("tconnect : status du robot : %d\n", status);
-
+	  rt_printf("tconnect : step1\n");
       rt_mutex_acquire (&mutexEtat, TM_INFINITE);	//acquisition d'un mutex
       etatCommRobot = status;	//etatCommRobot est une variable partagé avec deplacer 
       rt_mutex_release (&mutexEtat);	//on rend le mutex donc tkt
+      
+      rt_printf("tconnect : step2\n");
       if (status == STATUS_OK)
 	{
+	  rt_printf("tconnect : step3\n");
 	  rt_mutex_acquire (&mutexRobot, TM_INFINITE);	//acquisition d'un mutex
-	 
-	  status = robot->start_insecurely(robot);	
+	  rt_printf("tconnect : step4\n");		 
+	  status = robot->start_insecurely(robot);	// les watchdogs ne fonctionnent apparament plus sur les robot
 	  rt_mutex_release (&mutexRobot);	//on rend le mutex 
-
+	  rt_printf("tconnect : step5\n");
 	  if (status == STATUS_OK)
 	    {
 	      rt_printf ("tconnect : Robot démarrer\n");
@@ -321,7 +324,7 @@ void deplacer (void *arg)
       if (status == STATUS_OK)
 	  {
 	  rt_mutex_acquire (&mutexMove, TM_INFINITE);
-	  rt_printf("tmove: on a acquis le mutex Move \n");
+	  rt_printf(" tmove: on a acquis le mutex Move \n");
 	  switch (move->get_direction (move))
 	    {
 	    case DIRECTION_FORWARD:
@@ -347,7 +350,7 @@ void deplacer (void *arg)
 	    }
 	  rt_mutex_release (&mutexMove);
 	  rt_mutex_acquire (&mutexRobot, TM_INFINITE);	//acquisition d'un mutex
-	  rt_printf("tmove: on prend le mutexRobot!!\n");
+	  rt_printf(" tmove: on prend le mutexRobot !! \n");
 	  status = robot->set_motors (robot, gauche, droite);
 
 	  rt_mutex_release (&mutexRobot);	//on rend le mutex 

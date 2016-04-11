@@ -117,10 +117,10 @@ void initStruct(void) {
         exit(EXIT_FAILURE);
     }
 
-    if (err = rt_task_create(&tImage, NULL, 0, PRIORITY_TIMAGE, 0)) {
+    /*if (err = rt_task_create(&tImage, NULL, 0, PRIORITY_TIMAGE, 0)) {
         rt_printf("Error task create: %s\n", strerror(-err));
         exit(EXIT_FAILURE);
-    }
+    }*/
     
     
    if (err = rt_task_create(&trechargewat, NULL, 0, PRIORITY_TRECHARGEWAT, 0)) {
@@ -170,11 +170,11 @@ startTasks ()
       rt_printf ("Error task start: %s\n", strerror (-err));
       exit (EXIT_FAILURE);
     }
-  if (err = rt_task_start (&tImage, &imageThread, NULL))
+ /* if (err = rt_task_start (&tImage, &imageThread, NULL))
     {
       rt_printf ("Error task start: %s\n", strerror (-err));
       exit (EXIT_FAILURE);
-    }
+    }*/
 
   if (err = rt_task_start (&trechargewat, &recharge, NULL))
     {
@@ -193,7 +193,7 @@ void deleteTasks() {
     rt_task_delete(&tServeur);
     rt_task_delete(&tconnect);
     rt_task_delete(&tmove);
-    rt_task_delete(&tImage);
+    //rt_task_delete(&tImage);
     rt_task_delete(&trechargewat);
     rt_task_delete(&tenvoyer);
     rt_task_delete(&tverifierComRobot);
